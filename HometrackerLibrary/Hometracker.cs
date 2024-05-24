@@ -1,6 +1,6 @@
-﻿namespace CalculatorLibrary {
+﻿namespace HometrackerLibrary {
 /// \brief A class for performing basic arithmetic operations.
-public class Calculator {
+public class Hometracker {
   /// \brief Adds two integers.
   /// \param a The first integer to add.
   /// \param b The second integer to add.

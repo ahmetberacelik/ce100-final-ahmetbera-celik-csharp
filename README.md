@@ -424,49 +424,49 @@ dotnet --version
 ### Create Solution with Name
 
 ```batch
-dotnet new sln -n CalculatorLibrary
+dotnet new sln -n HometrackerLibrary
 ```
 
 ### Create Project Class Library with Name
 
 ```batch
-dotnet new classlib -n CalculatorLibrary
+dotnet new classlib -n HometrackerLibrary
 ```
 
 ### Add Project to Solution
 
 ```batch
- dotnet sln add CalculatorLibrary
+ dotnet sln add HometrackerLibrary
 ```
 
 ### Create XUnit Test for Project
 
 ```batch
-dotnet new xunit -n CalculatorLibrary.Tests
+dotnet new xunit -n HometrackerLibrary.Tests
 ```
 
 ### Add Project to UnitTest Dependecy
 
 ```batch
-dotnet add CalculatorLibrary.Tests/CalculatorLibrary.Tests.csproj reference CalculatorLibrary/CalculatorLibrary.csproj
+dotnet add HometrackerLibrary.Tests/HometrackerLibrary.Tests.csproj reference HometrackerLibrary/HometrackerLibrary.csproj
 ```
 
 ### Add Consol Application
 
 ```batch
-dotnet new console -n CalculatorApp
+dotnet new console -n HometrackerApp
 ```
 
 ### Add Console Application to Solution
 
 ```batch
-dotnet sln add CalculatorApp
+dotnet sln add HometrackerApp
 ```
 
 ### Add Library to Application Dependecy
 
 ```batch
-dotnet add CalculatorApp/CalculatorApp.csproj reference CalculatorLibrary/CalculatorLibrary.csproj
+dotnet add HometrackerApp/HometrackerApp.csproj reference HometrackerLibrary/HometrackerLibrary.csproj
 ```
 
 After this step commit and push your work. 

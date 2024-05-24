@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CalculatorLibrary\CalculatorLibrary.csproj" />
+    <ProjectReference Include="..\HometrackerLibrary\HometrackerLibrary.csproj" />
   </ItemGroup>
 
 </Project>
