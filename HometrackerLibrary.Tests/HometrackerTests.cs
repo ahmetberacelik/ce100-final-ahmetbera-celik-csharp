@@ -212,11 +212,35 @@ public class HometrackerTests {
             {
                 IsTestMode = true
             };
-            bool guestMode = true;
+            bool guestMode = false;
 
             bool result = hometracker.UtilityLogging(guestMode);
 
-            Assert.False(result);
+            Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void ReminderSetupTest()
+        {
+            var input = new StringReader("2\n\n1\ntest reminder\n10\n\n2\n\n3\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+
+            bool guestMode = false;
+
+            bool result = hometracker.ReminderSetup(guestMode);
+
+            Assert.True(result);
 
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));

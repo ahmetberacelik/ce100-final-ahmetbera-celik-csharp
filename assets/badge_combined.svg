@@ -100,9 +100,9 @@
 
         <text x="53" y="15" fill="#010101" fill-opacity=".3">Coverage</text>
         <text x="53" y="14" fill="#fff">Coverage</text>
-        <text class="linecoverage" x="132.5" y="15" fill="#010101" fill-opacity=".3">27.4%</text><text class="linecoverage" x="132.5" y="14">27.4%</text>
-        <text class="branchcoverage" x="132.5" y="15" fill="#010101" fill-opacity=".3">15%</text><text class="branchcoverage" x="132.5" y="14">15%</text>
-        <text class="methodcoverage" x="132.5" y="15" fill="#010101" fill-opacity=".3">32%</text><text class="methodcoverage" x="132.5" y="14">32%</text>
+        <text class="linecoverage" x="132.5" y="15" fill="#010101" fill-opacity=".3">60.7%</text><text class="linecoverage" x="132.5" y="14">60.7%</text>
+        <text class="branchcoverage" x="132.5" y="15" fill="#010101" fill-opacity=".3">47.1%</text><text class="branchcoverage" x="132.5" y="14">47.1%</text>
+        <text class="methodcoverage" x="132.5" y="15" fill="#010101" fill-opacity=".3">75.5%</text><text class="methodcoverage" x="132.5" y="14">75.5%</text>
     </g>
 
     <g>

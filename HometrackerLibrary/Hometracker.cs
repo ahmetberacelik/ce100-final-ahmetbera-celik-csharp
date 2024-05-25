@@ -188,7 +188,7 @@ namespace HometrackerLibrary
                         ShowTrendAnalysis();
                         break;
                     case 4:
-                        ReminderSetup();
+                        ReminderSetup(guestMode);
                         break;
                     case 5:
                         Console.WriteLine("Exiting program...Press enter!");
@@ -284,6 +284,7 @@ namespace HometrackerLibrary
                         tempPassword = Console.ReadLine();
 
                         SaveUser(new User(tempUsername, tempPassword), filename);
+                        active_user = tempUsername;
                         ClearScreen();
                         Console.WriteLine($"User registered successfully.\nWelcome {tempUsername}");
                         take_enter_input();
@@ -1125,9 +1126,9 @@ namespace HometrackerLibrary
             return true;
         }
 
-        public bool ReminderSetup()
+        public bool ReminderSetup(bool localGuestMode)
         {
-            if (guestMode)
+            if (localGuestMode)
             {
                 Console.WriteLine("Guest mode does not have permission to set reminders.");
                 take_enter_input();
