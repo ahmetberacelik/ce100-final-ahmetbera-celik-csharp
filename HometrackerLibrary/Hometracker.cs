@@ -409,12 +409,7 @@ namespace HometrackerLibrary
 
         public bool FindPath(Node source, Node sink, Dictionary<Node, Node> parentMap)
         {
-            if (source == null || sink == null)
-            {
-                Console.WriteLine("There is no path.");
-                return false;
-            }
-
+            if (source == null || sink == null) { Console.WriteLine("There is no path."); return false; }
             Queue<Node> queue = new Queue<Node>();
             HashSet<Node> visited = new HashSet<Node>();
 
@@ -1012,11 +1007,6 @@ namespace HometrackerLibrary
 
         public int SaveReminder(Reminder reminder, string filename)
         {
-            if (string.IsNullOrEmpty(reminder.Username) || string.IsNullOrEmpty(reminder.ReminderText))
-            {
-                Console.WriteLine("Username and ReminderText cannot be null or empty.");
-                return -1;
-            }
 
             using (FileStream stream = new FileStream(filename, FileMode.Append, FileAccess.Write))
             using (BinaryWriter writer = new BinaryWriter(stream))

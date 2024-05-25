@@ -253,6 +253,28 @@ public class HometrackerTests {
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
         [Fact]
+        public void UtilityLoggingTestInvalidUsage()
+        {
+            var input = new StringReader("5\ninvalid\n\n5\n45\n\n8\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+            bool guestMode = false;
+
+            bool result = hometracker.UtilityLogging(guestMode);
+
+            Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
         public void UtilityLoggingInvalidInputTest()
         {
             var input = new StringReader("invalid\n\n454\n\n8\n");
@@ -344,6 +366,7 @@ public class HometrackerTests {
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
+
         [Fact]
         public void CalculateAndShowTest()
         {
