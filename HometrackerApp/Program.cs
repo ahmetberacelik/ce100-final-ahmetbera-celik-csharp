@@ -1,10 +1,18 @@
-﻿internal class Program {
-  private static void Main(string[] args) {
-    Console.WriteLine("Hometracker Application Running..");
-    var hometrackerLibrary = new HometrackerLibrary.Hometracker();
-    hometrackerLibrary.Add(2, 2);
-    hometrackerLibrary.Multiply(2, 2);
-    hometrackerLibrary.Subtract(2, 2);
-    hometrackerLibrary.Divide(2, 2);
+﻿
+using HometrackerLibrary;
+
+/**
+* @file Program.cs
+* @brief Entry point for the Hometracker system application.
+*/
+internal class Program {
+    /**
+    * @brief The main method that serves as the entry point for the application.
+    * @param args Command-line arguments.
+    */
+    private static void Main(string[] args) {
+    Hometracker hometracker = new Hometracker();
+        bool authenticationResult = hometracker.UserAuthentication();
+        hometracker.MainMenu(authenticationResult);
   }
 }

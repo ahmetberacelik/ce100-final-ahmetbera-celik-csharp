@@ -1,34 +1,225 @@
+using System;
+using System.IO;
+using Xunit;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HometrackerLibrary.Tests {
 public class HometrackerTests {
-  [Fact]
-  public void TestAdd() {
-    Hometracker calc = new Hometracker();
-    Assert.Equal(4, calc.Add(2, 2));
-  }
 
-  [Fact]
-  public void TestSubtract() {
-    Hometracker calc = new Hometracker();
-    Assert.Equal(2, calc.Subtract(4, 2));
-  }
+        [Fact]
+        public void MainMenuIncorrectLoginTest()
+        {
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+            bool authenticationResult = false;
 
-  [Fact]
-  public void TestMultiply() {
-    Hometracker calc = new Hometracker();
-    Assert.Equal(8, calc.Multiply(2, 4));
-  }
+            bool result = hometracker.MainMenu(authenticationResult);
 
-  [Fact]
-  public void TestDivide() {
-    Hometracker calc = new Hometracker();
-    Assert.Equal(2, calc.Divide(4, 2));
-  }
+            Assert.False(result);
 
-  [Fact]
-  public void TestDivideByZero() {
-    Hometracker calc = new Hometracker();
-    Assert.Throws<DivideByZeroException>(() => calc.Divide(4, 0));
-  }
-}
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void MainMenuInvalidTest()
+        {
+            var input = new StringReader("abc\n\n48\n\n5\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+
+            bool authenticationResult = true;
+
+            bool result = hometracker.MainMenu(authenticationResult);
+
+            Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void MainMenuValidTest()
+        {
+            var input = new StringReader("1\n8\n2\n\n3\n\n4\n3\n5\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+
+            bool authenticationResult = true;
+
+            bool result = hometracker.MainMenu(authenticationResult);
+
+            Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void LoginGuestModeTest()
+        {
+            var input = new StringReader("3\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+
+            bool result = hometracker.UserAuthentication();
+
+            Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void UserAuthenticationTestCorrectLogin()
+        {
+            var input = new StringReader("1\nEnes Koy\n123456\n\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+
+            bool result = hometracker.UserAuthentication();
+
+            Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void UserAuthenticationTestIncorrectLogin()
+        {
+            var input = new StringReader("1\nInvalid User\n123456\n4\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+
+            bool result = hometracker.UserAuthentication();
+
+            Assert.False(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void UserAuthenticationRegisterTest()
+        {
+            var input = new StringReader("2\nTestUser\n123456\n\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+
+            bool result = hometracker.UserAuthentication();
+
+            Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void UserAuthenticationInvalidInputTest()
+        {
+            var input = new StringReader("invalid\n\n454\n\n4\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+
+            bool result = hometracker.UserAuthentication();
+
+            Assert.False(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void UtilityLoggingGuestModeTest()
+        {
+            var input = new StringReader("");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+            bool guestMode = true;
+
+            bool result = hometracker.UtilityLogging(guestMode);
+
+            Assert.False(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void UtilityLoggingTest()
+        {
+            var input = new StringReader("1\n100\n2\n100\n3\n100\n4\n1\n\n4\n2\n\n6\n\n7\n\n8\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+            bool guestMode = true;
+
+            bool result = hometracker.UtilityLogging(guestMode);
+
+            Assert.False(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+    }
 }
