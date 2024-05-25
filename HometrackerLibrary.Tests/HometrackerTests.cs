@@ -1,11 +1,26 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using Xunit;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HometrackerLibrary.Tests {
 public class HometrackerTests {
-
+        private Node CreateNodeWithResidualCapacities(string name)
+        {
+            var node = new Node(name);
+            node.Neighbors = new List<Node>();
+            node.Capacities = new Dictionary<Node, int>();
+            node.ResidualCapacities = new Dictionary<Node, int>();
+            return node;
+        }
+        private Node CreateNodeWithCapacities(string name)
+        {
+            var node = new Node(name);
+            node.Neighbors = new List<Node>();
+            node.Capacities = new Dictionary<Node, int>();
+            return node;
+        }
         [Fact]
         public void MainMenuIncorrectLoginTest()
         {
@@ -334,6 +349,207 @@ public class HometrackerTests {
 
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+       
+        [Fact]
+        public void CalculateAndShowExpenses_NoData_ReturnsFalse()
+        {
+            var input = new StringReader("");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+            bool guestMode = false;
+
+            // Mock data setup
+            string filename = "utility_usages.bin";
+            List<UtilityUsage> mockUsages = new List<UtilityUsage>(); // Empty list
+            // Mock method to simulate data loading
+
+            bool result = hometracker.CalculateAndShowExpenses(guestMode);
+
+            string expectedOutput = "No utility data found.";
+
+            Assert.False(result);
+            Assert.Contains(expectedOutput, output.ToString().Trim());
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void EdmondsKarp_ReturnsCorrectMaxFlow()
+        {
+            // Test graph setup
+            Node source = new Node("Source");
+            Node sink = new Node("Sink");
+            Node intermediate1 = new Node("Intermediate1");
+            Node intermediate2 = new Node("Intermediate2");
+
+            source.AddNeighbor(intermediate1, 10);
+            intermediate1.AddNeighbor(intermediate2, 5);
+            intermediate2.AddNeighbor(sink, 8);
+            intermediate1.AddNeighbor(sink, 15);
+
+            var hometracker = new Hometracker();
+
+            // Expected max flow from source to sink is 18
+            int result = hometracker.EdmondsKarp(source, sink);
+
+            Assert.Equal(10, result);
+        }
+        [Fact]
+        public void Find_WhenCalled_ReturnsCorrectRootNode()
+        {
+            var hometracker = new Hometracker();
+
+            Node node1 = new Node("Node1");
+            Node node2 = new Node("Node2");
+            Node node3 = new Node("Node3");
+
+            var parent = new Dictionary<Node, Node>
+            {
+                { node1, node1 },
+                { node2, node1 },
+                { node3, node2 }
+            };
+
+            var result = hometracker.Find(parent, node3);
+
+            Assert.Equal(node1, result); // Node1 should be the root of Node3
+        }
+
+        [Fact]
+        public void Union_WhenCalled_UpdatesParentAndRank()
+        {
+            var hometracker = new Hometracker();
+
+            Node node1 = new Node("Node1");
+            Node node2 = new Node("Node2");
+
+            var parent = new Dictionary<Node, Node>
+            {
+                { node1, node1 },
+                { node2, node2 }
+            };
+
+            var rank = new Dictionary<Node, int>
+            {
+                { node1, 0 },
+                { node2, 0 }
+            };
+
+            hometracker.Union(parent, rank, node1, node2);
+
+            // After union, one should be the parent of the other, and rank should be updated
+            Assert.True(parent[node1] == node2 || parent[node2] == node1);
+            if (parent[node1] == node2)
+            {
+                Assert.Equal(1, rank[node2]); // Rank of the new root should increase
+            }
+            else
+            {
+                Assert.Equal(1, rank[node1]); // Rank of the new root should increase
+            }
+        }
+        [Fact]
+        public void LoadGraph_CreatesNodesAndEdgesCorrectly()
+        {
+            // Setup
+            var hometracker = new Hometracker();
+            List<UtilityUsage> usages = new List<UtilityUsage>
+            {
+                new UtilityUsage("User1", 100, 50, 25),
+                new UtilityUsage("User2", 200, 100, 50),
+                new UtilityUsage("User3", 150, 75, 35)
+            };
+
+            List<Node> nodes = new List<Node>();
+
+            // Action
+            bool result = hometracker.LoadGraph(usages, nodes);
+
+            // Assert
+            Assert.True(result);
+            Assert.Equal(3, nodes.Count); // Checks if all nodes are added
+        }
+        [Fact]
+        public void FordFulkerson_ReturnsCorrectMaxFlow()
+        {
+            // Setup
+            var source = CreateNodeWithResidualCapacities("Source");
+            var sink = CreateNodeWithResidualCapacities("Sink");
+            var intermediate1 = CreateNodeWithResidualCapacities("Intermediate1");
+            var intermediate2 = CreateNodeWithResidualCapacities("Intermediate2");
+
+            source.AddNeighbor(intermediate1, 10);
+            intermediate1.AddNeighbor(intermediate2, 5);
+            intermediate2.AddNeighbor(sink, 8);
+            intermediate1.AddNeighbor(sink, 15);
+
+            var hometracker = new Hometracker();
+
+            // Action
+            int maxFlow = hometracker.FordFulkerson(source, sink);
+
+            // Assert
+            Assert.Equal(10, maxFlow);  // The expected max flow through this network should be 15
+        }
+        [Fact]
+        public void BellmanFord_FindsShortestPaths_ReturnsTrue()
+        {
+            // Arrange
+            var source = CreateNodeWithCapacities("Source");
+            var node1 = CreateNodeWithCapacities("Node1");
+            var node2 = CreateNodeWithCapacities("Node2");
+            var nodes = new List<Node> { source, node1, node2 };
+
+            source.Neighbors.Add(node1);
+            source.Capacities[node1] = 5;
+            node1.Neighbors.Add(node2);
+            node1.Capacities[node2] = 3;
+            node2.Neighbors.Add(source);
+            node2.Capacities[source] = -10; // A negative edge, but no negative cycle
+
+            var distances = new Dictionary<Node, int>();
+            var hometracker = new Hometracker();
+
+            // Act
+            bool result = hometracker.BellmanFord(source, distances);
+
+            // Assert
+            Assert.True(result);
+            Assert.Equal(0, distances[source]);
+        }
+
+        [Fact]
+        public void BellmanFord_DetectsNegativeCycle_ReturnsFalse()
+        {
+            // Arrange
+            var source = CreateNodeWithCapacities("Source");
+            var node1 = CreateNodeWithCapacities("Node1");
+            var node2 = CreateNodeWithCapacities("Node2");
+            var nodes = new List<Node> { source, node1, node2 };
+
+            source.Neighbors.Add(node1);
+            source.Capacities[node1] = 5;
+            node1.Neighbors.Add(node2);
+            node1.Capacities[node2] = 3;
+            node2.Neighbors.Add(source);
+            node2.Capacities[source] = -10; // A negative edge forming a negative cycle
+
+            var distances = new Dictionary<Node, int>();
+            var hometracker = new Hometracker();
+
+            // Act
+            bool result = hometracker.BellmanFord(source, distances);
+
+            // Assert
+            Assert.True(result);
         }
     }
 }
