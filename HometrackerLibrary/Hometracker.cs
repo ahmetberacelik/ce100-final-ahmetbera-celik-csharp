@@ -79,10 +79,7 @@ namespace HometrackerLibrary
         public int ResidualCapacityTo(Node neighbor)
         {
             if (ResidualCapacities.ContainsKey(neighbor))
-                return ResidualCapacities[neighbor];
-            return 0;
-        }
-
+                return ResidualCapacities[neighbor]; return 0; }
         public void UpdateResidualCapacityTo(Node neighbor, int capacityChange)
         {
             if (ResidualCapacities.ContainsKey(neighbor))
@@ -106,9 +103,7 @@ namespace HometrackerLibrary
     {
         public Node U { get; set; }
         public Node V { get; set; }
-        public int Weight { get; set; }
-    }
-
+        public int Weight { get; set; } }
     /**
          * @brief Represents the Hometracker System.
          * 

@@ -21,6 +21,22 @@ public class HometrackerTests {
             node.Capacities = new Dictionary<Node, int>();
             return node;
         }
+        private Node CreateNode(string name)
+        {
+            return new Node(name);
+        }
+
+        private Edge CreateEdge(Node u, Node v, int weight)
+        {
+            return new Edge { U = u, V = v, Weight = weight };
+        }
+        private Node CreateNodeWithNeighbors(string name)
+        {
+            var node = new Node(name);
+            node.Neighbors = new List<Node>();
+            node.Capacities = new Dictionary<Node, int>();
+            return node;
+        }
         [Fact]
         public void MainMenuIncorrectLoginTest()
         {
@@ -550,6 +566,89 @@ public class HometrackerTests {
 
             // Assert
             Assert.True(result);
+        }
+        [Fact]
+        public void KruskalMST_CreatesCorrectMST()
+        {
+            // Arrange
+            var node1 = CreateNode("Node1");
+            var node2 = CreateNode("Node2");
+            var node3 = CreateNode("Node3");
+            var node4 = CreateNode("Node4");
+
+            var edges = new List<Edge>
+            {
+                CreateEdge(node1, node2, 10),
+                CreateEdge(node1, node3, 15),
+                CreateEdge(node2, node3, 5),
+                CreateEdge(node2, node4, 10),
+                CreateEdge(node3, node4, 10)
+            };
+
+            var nodes = new List<Node> { node1, node2, node3, node4 };
+            var hometracker = new Hometracker();
+
+            // Redirect Console Output
+            using (var sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+
+                // Act
+                hometracker.KruskalMST(nodes, edges);
+
+                // Assert
+                string result = sw.ToString().Trim();
+                Assert.Contains("Node2 - Node3: 5", result);
+                Assert.Contains("Node1 - Node2: 10", result);
+                Assert.Contains("Node2 - Node4: 10", result);
+                Assert.DoesNotContain("Node1 - Node3: 15", result);
+                Assert.DoesNotContain("Node3 - Node4: 10", result);
+
+                Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            }
+        }
+        [Fact]
+        public void Dijkstra_FindsShortestPathsCorrectly()
+        {
+            // Arrange
+            var source = CreateNodeWithNeighbors("Source");
+            var node1 = CreateNodeWithNeighbors("Node1");
+            var node2 = CreateNodeWithNeighbors("Node2");
+            var node3 = CreateNodeWithNeighbors("Node3");
+
+            source.Neighbors.Add(node1);
+            source.Capacities[node1] = 1;
+            node1.Neighbors.Add(node2);
+            node1.Capacities[node2] = 3;
+            node2.Neighbors.Add(node3);
+            node2.Capacities[node3] = 1;
+            node3.Neighbors.Add(node1); // Adding cycle for complexity
+            node3.Capacities[node1] = 1;
+
+            var nodes = new List<Node> { source, node1, node2, node3 };
+
+            var dist = new Dictionary<Node, int>();
+            var prev = new Dictionary<Node, Node>();
+
+            foreach (var node in nodes)
+            {
+                dist[node] = int.MaxValue;
+                prev[node] = null;
+            }
+
+            var hometracker = new Hometracker();
+
+            // Act
+            hometracker.Dijkstra(source, dist, prev);
+
+            // Assert
+            Assert.Equal(0, dist[source]);
+            Assert.Equal(1, dist[node1]);
+            Assert.Equal(4, dist[node2]);
+            Assert.Equal(5, dist[node3]);
+            Assert.Equal(node1, prev[node2]);
+            Assert.Equal(node2, prev[node3]);
+            Assert.Null(prev[source]);
         }
     }
 }
