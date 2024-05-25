@@ -131,10 +131,7 @@ namespace HometrackerLibrary
         */
         public void ClearScreen()
         {
-            if (!IsTestMode)
-            {
-                Console.Clear();
-            }
+            if (!IsTestMode) { Console.Clear(); }
         }
         public bool MainMenu(bool authenticationResult)
         {
@@ -305,14 +302,7 @@ namespace HometrackerLibrary
                 var node = queue.Dequeue();
                 Console.WriteLine($"Username: {node.Username}, Electricity: {node.Electricity}, Water: {node.Water}, Gas: {node.Gas}");
 
-                foreach (var neighbor in node.Neighbors)
-                {
-                    if (!visited.Contains(neighbor.Username))
-                    {
-                        queue.Enqueue(neighbor);
-                        visited.Add(neighbor.Username);
-                    }
-                }
+                foreach (var neighbor in node.Neighbors) { if (!visited.Contains(neighbor.Username)) { queue.Enqueue(neighbor); visited.Add(neighbor.Username); } }
             }
         }
         public void DFS(Node startNode)
@@ -330,13 +320,7 @@ namespace HometrackerLibrary
                     Console.WriteLine($"Username: {node.Username}, Electricity: {node.Electricity}, Water: {node.Water}, Gas: {node.Gas}");
                     visited.Add(node.Username);
 
-                    foreach (var neighbor in node.Neighbors)
-                    {
-                        if (!visited.Contains(neighbor.Username))
-                        {
-                            stack.Push(neighbor);
-                        }
-                    }
+                    foreach (var neighbor in node.Neighbors) { if (!visited.Contains(neighbor.Username)) { stack.Push(neighbor); } }
                 }
             }
         }
@@ -686,14 +670,7 @@ namespace HometrackerLibrary
 
                 mstSet[u] = true;
 
-                foreach (var neighbor in u.Neighbors)
-                {
-                    if (!mstSet[neighbor] && u.Capacities[neighbor] < key[neighbor])
-                    {
-                        parent[neighbor] = u;
-                        key[neighbor] = u.Capacities[neighbor];
-                    }
-                }
+                foreach (var neighbor in u.Neighbors) { if (!mstSet[neighbor] && u.Capacities[neighbor] < key[neighbor]) { parent[neighbor] = u; key[neighbor] = u.Capacities[neighbor]; } }
             }
         }
 
