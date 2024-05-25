@@ -34,8 +34,6 @@ namespace HometrackerLibrary
         public string ReminderText { get; set; }
         public int DaysAfter { get; set; }
 
-        public Reminder() { }
-
         public Reminder(string username, string reminderText, int daysAfter)
         {
             Username = username;
@@ -109,13 +107,6 @@ namespace HometrackerLibrary
         public Node U { get; set; }
         public Node V { get; set; }
         public int Weight { get; set; }
-
-        public Edge(Node u, Node v, int weight)
-        {
-            U = u;
-            V = v;
-            Weight = weight;
-        }
     }
 
     /**
@@ -638,10 +629,7 @@ namespace HometrackerLibrary
         public bool BellmanFord(Node source, Dictionary<Node, int> dist)
         {
             var nodes = new List<Node>(); // This needs to be all the nodes in the graph
-            foreach (var node in nodes)
-            {
-                dist[node] = int.MaxValue;
-            }
+            foreach (var node in nodes) { dist[node] = int.MaxValue; }
             dist[source] = 0;
 
             for (int i = 0; i < nodes.Count - 1; i++)
@@ -717,15 +705,6 @@ namespace HometrackerLibrary
                     }
                 }
             }
-
-            Console.WriteLine("Prim's MST:");
-            foreach (var node in nodes)
-            {
-                if (parent[node] != null)
-                {
-                    Console.WriteLine($"{parent[node].Username} - {node.Username}: {key[node]}");
-                }
-            }
         }
 
         private Node GetMinKeyNode(Dictionary<Node, int> key, Dictionary<Node, bool> mstSet)
@@ -783,17 +762,7 @@ namespace HometrackerLibrary
             edges.Sort((a, b) => a.Weight.CompareTo(b.Weight));
 
             Console.WriteLine("Kruskal's MST:");
-            foreach (var edge in edges)
-            {
-                Node u = Find(parent, edge.U);
-                Node v = Find(parent, edge.V);
-
-                if (u != v)
-                {
-                    Console.WriteLine($"{edge.U.Username} - {edge.V.Username}: {edge.Weight}");
-                    Union(parent, rank, u, v);
-                }
-            }
+            foreach (var edge in edges) { Node u = Find(parent, edge.U); Node v = Find(parent, edge.V); if (u != v) { Console.WriteLine($"{edge.U.Username} - {edge.V.Username}: {edge.Weight}"); Union(parent, rank, u, v); } }
         }
         public bool UtilityLogging(bool localGuestMode)
         {
