@@ -202,7 +202,7 @@ public class HometrackerTests {
         [Fact]
         public void UtilityLoggingTest()
         {
-            var input = new StringReader("1\n100\n2\n100\n3\n100\n4\n1\n\n4\n2\n\n6\n\n7\n\n8\n");
+            var input = new StringReader("1\n100\n2\n100\n3\n100\n4\n1\n\n4\n2\n\n4\n4545\n\n5\n1\n\n5\n2\n\n5\ni\n\n5\n45\n\n6\n\n7\n\n8\n");
             Console.SetIn(input);
 
             var output = new StringWriter();
@@ -221,7 +221,28 @@ public class HometrackerTests {
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));
         }
+        [Fact]
+        public void UtilityLoggingInvalidInputTest()
+        {
+            var input = new StringReader("invalid\n\n454\n\n8\n");
+            Console.SetIn(input);
 
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+            bool guestMode = false;
+
+            bool result = hometracker.UtilityLogging(guestMode);
+
+            Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
         [Fact]
         public void ReminderSetupTest()
         {
@@ -241,6 +262,75 @@ public class HometrackerTests {
             bool result = hometracker.ReminderSetup(guestMode);
 
             Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+
+        [Fact]
+        public void ReminderSetupInvalidTest()
+        {
+            var input = new StringReader("invalid\n\n454\n\n3\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+
+            bool guestMode = false;
+
+            bool result = hometracker.ReminderSetup(guestMode);
+
+            Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void ReminderSetupInvalidTextTest()
+        {
+            var input = new StringReader("1\ntest reminder\ninvalid\n\n3\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+
+            bool guestMode = false;
+
+            bool result = hometracker.ReminderSetup(guestMode);
+
+            Assert.True(result);
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Console.SetIn(new StreamReader(Console.OpenStandardInput()));
+        }
+        [Fact]
+        public void CalculateAndShowTest()
+        {
+            var input = new StringReader("\n");
+            Console.SetIn(input);
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var hometracker = new Hometracker
+            {
+                IsTestMode = true
+            };
+            bool guestMode = false;
+
+            bool result = hometracker.CalculateAndShowExpenses(guestMode);
+
+            Assert.False(result);
 
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
             Console.SetIn(new StreamReader(Console.OpenStandardInput()));

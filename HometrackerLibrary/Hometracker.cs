@@ -182,7 +182,7 @@ namespace HometrackerLibrary
                         UtilityLogging(guestMode);
                         break;
                     case 2:
-                        CalculateAndShowExpenses();
+                        CalculateAndShowExpenses(guestMode);
                         break;
                     case 3:
                         ShowTrendAnalysis();
@@ -423,6 +423,12 @@ namespace HometrackerLibrary
 
         public bool FindPath(Node source, Node sink, Dictionary<Node, Node> parentMap)
         {
+            if (source == null || sink == null)
+            {
+                Console.WriteLine("There is no path.");
+                return false;
+            }
+
             Queue<Node> queue = new Queue<Node>();
             HashSet<Node> visited = new HashSet<Node>();
 
@@ -436,7 +442,7 @@ namespace HometrackerLibrary
 
                 foreach (var neighbor in currentNode.Neighbors)
                 {
-                    if (!visited.Contains(neighbor) && neighbor.ResidualCapacityTo(neighbor) > 0) // Assuming this method checks available capacity
+                    if (!visited.Contains(neighbor) && currentNode.ResidualCapacityTo(neighbor) > 0)
                     {
                         parentMap[neighbor] = currentNode;
                         if (neighbor == sink)
@@ -450,6 +456,7 @@ namespace HometrackerLibrary
 
             return false;
         }
+
         public int FordFulkerson(Node source, Node sink)
         {
             int maxFlow = 0;
@@ -606,11 +613,7 @@ namespace HometrackerLibrary
         public void Dijkstra(Node source, Dictionary<Node, int> dist, Dictionary<Node, Node> prev)
         {
             var nodes = new List<Node>();
-            foreach (var node in nodes)
-            {
-                dist[node] = int.MaxValue;
-                prev[node] = null;
-            }
+            foreach (var node in nodes) { dist[node] = int.MaxValue; prev[node] = null; }
             dist[source] = 0;
 
             var priorityQueue = new PriorityQueue<Node, int>();
@@ -665,8 +668,7 @@ namespace HometrackerLibrary
                     }
                 }
             }
-            return true;
-        }
+            return true; }
         public void InitializeCosts(Dictionary<Node, Dictionary<Node, int>> costs, List<Node> nodes)
         {
             foreach (var u in nodes)
@@ -977,10 +979,10 @@ namespace HometrackerLibrary
                 }
             }
         }
-        public bool CalculateAndShowExpenses()
+        public bool CalculateAndShowExpenses(bool localGuestMode)
         {
             ClearScreen();
-            if (guestMode)
+            if (localGuestMode)
             {
                 Console.WriteLine("Guest mode does not have permission to access expense calculation.");
                 take_enter_input();
@@ -1046,30 +1048,23 @@ namespace HometrackerLibrary
 
         public int SaveReminder(Reminder reminder, string filename)
         {
-            try
+            if (string.IsNullOrEmpty(reminder.Username) || string.IsNullOrEmpty(reminder.ReminderText))
             {
-                if (string.IsNullOrEmpty(reminder.Username) || string.IsNullOrEmpty(reminder.ReminderText))
-                {
-                    Console.WriteLine("Username and ReminderText cannot be null or empty.");
-                    return -1;
-                }
-
-                using (FileStream stream = new FileStream(filename, FileMode.Append, FileAccess.Write))
-                using (BinaryWriter writer = new BinaryWriter(stream))
-                {
-                    Console.WriteLine("Attempting to write reminder to file...");
-                    writer.Write(reminder.Username ?? string.Empty);
-                    writer.Write(reminder.ReminderText ?? string.Empty);
-                    writer.Write(reminder.DaysAfter);
-                    stream.Flush();
-                    Console.WriteLine("Reminder written to file successfully.");
-                }
-                return 1;
-            }
-            catch (Exception ex)
-            {
+                Console.WriteLine("Username and ReminderText cannot be null or empty.");
                 return -1;
             }
+
+            using (FileStream stream = new FileStream(filename, FileMode.Append, FileAccess.Write))
+            using (BinaryWriter writer = new BinaryWriter(stream))
+            {
+                Console.WriteLine("Attempting to write reminder to file...");
+                writer.Write(reminder.Username ?? string.Empty);
+                writer.Write(reminder.ReminderText ?? string.Empty);
+                writer.Write(reminder.DaysAfter);
+                stream.Flush();
+                Console.WriteLine("Reminder written to file successfully.");
+            }
+            return 1;
         }
 
 
@@ -1167,6 +1162,7 @@ namespace HometrackerLibrary
                         if (!int.TryParse(Console.ReadLine(), out int daysAfter))
                         {
                             Console.WriteLine("Invalid input for days, please enter a number.");
+                            take_enter_input();
                             break;
                         }
 
@@ -1176,10 +1172,6 @@ namespace HometrackerLibrary
                         {
                             Console.WriteLine("Reminder saved successfully.");
                             reminderCount++;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Failed to save reminder.");
                         }
                         take_enter_input();
                         break;
