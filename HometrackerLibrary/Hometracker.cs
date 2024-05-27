@@ -11,15 +11,31 @@ using System.Collections.Generic;
  */
 namespace HometrackerLibrary
 {
+    /**
+ * @brief Represents a utility usage record.
+ *
+ * This class stores information about the utility usage of a user, including electricity, water, and gas consumption.
+ */
     public class UtilityUsage
     {
         public string Username { get; set; }
         public double Electricity { get; set; }
         public double Water { get; set; }
         public double Gas { get; set; }
-
+        /**
+ * @brief Initializes a new instance of the UtilityUsage class with default values.
+ *
+ * This constructor creates a new UtilityUsage object with default property values.
+ */
         public UtilityUsage() { }
-
+        /**
+ * @brief Initializes a new instance of the UtilityUsage class with specified values.
+ *
+ * @param username The username associated with the utility usage record.
+ * @param electricity The amount of electricity consumed.
+ * @param water The amount of water consumed.
+ * @param gas The amount of gas consumed.
+ */
         public UtilityUsage(string username, double electricity, double water, double gas)
         {
             Username = username;
@@ -28,12 +44,23 @@ namespace HometrackerLibrary
             Gas = gas;
         }
     }
+    /**
+ * @brief Represents a reminder for a user.
+ *
+ * This class stores information about a reminder, including the associated username, reminder text, and number of days after which to remind.
+ */
     public class Reminder
     {
         public string Username { get; set; }
         public string ReminderText { get; set; }
         public int DaysAfter { get; set; }
-
+        /**
+ * @brief Initializes a new instance of the Reminder class with specified values.
+ *
+ * @param username The username associated with the reminder.
+ * @param reminderText The text of the reminder.
+ * @param daysAfter The number of days after which the reminder occurs.
+ */
         public Reminder(string username, string reminderText, int daysAfter)
         {
             Username = username;
@@ -50,14 +77,24 @@ namespace HometrackerLibrary
     {
         public string username { get; set; }
         public string password { get; set; }
-
-        // Constructor
+        /**
+ * @brief Initializes a new instance of the User class with specified values.
+ *
+ * @param username The username of the user.
+ * @param password The password of the user.
+ */
         public User(string username, string password)
         {
             this.username = username;
             this.password = password;
         }
     }
+    /**
+ * @brief Represents a node in a graph.
+ *
+ * This class represents a node in a graph, storing information such as username and utility usage.
+ * It also maintains information about neighboring nodes and capacities.
+ */
     public class Node
     {
         public string Username { get; set; }
@@ -67,7 +104,14 @@ namespace HometrackerLibrary
         public List<Node> Neighbors { get; set; }
         public Dictionary<Node, int> Capacities { get; set; }
         public Dictionary<Node, int> ResidualCapacities { get; set; }
-
+        /**
+ * @brief Initializes a new instance of the Node class with specified username.
+ *
+ * This constructor creates a new Node object with the given username and initializes its Neighbors,
+ * Capacities, and ResidualCapacities dictionaries.
+ *
+ * @param username The username associated with the node.
+ */
         public Node(string username)
         {
             Username = username;
@@ -75,11 +119,26 @@ namespace HometrackerLibrary
             Capacities = new Dictionary<Node, int>();
             ResidualCapacities = new Dictionary<Node, int>();
         }
-
+        /**
+ * @brief Gets the residual capacity to a specified neighbor node.
+ *
+ * This method retrieves the residual capacity to the specified neighbor node.
+ *
+ * @param neighbor The neighbor node to which the residual capacity is queried.
+ * @return The residual capacity to the neighbor node.
+ */
         public int ResidualCapacityTo(Node neighbor)
         {
             if (ResidualCapacities.ContainsKey(neighbor))
                 return ResidualCapacities[neighbor]; return 0; }
+        /**
+ * @brief Updates the residual capacity to a specified neighbor node.
+ *
+ * This method updates the residual capacity to the specified neighbor node by the given capacity change.
+ *
+ * @param neighbor The neighbor node whose residual capacity is updated.
+ * @param capacityChange The change in capacity.
+ */
         public void UpdateResidualCapacityTo(Node neighbor, int capacityChange)
         {
             if (ResidualCapacities.ContainsKey(neighbor))
@@ -91,7 +150,15 @@ namespace HometrackerLibrary
                 ResidualCapacities[neighbor] = capacityChange;
             }
         }
-
+        /**
+ * @brief Adds a neighbor node with a specified capacity.
+ *
+ * This method adds a neighbor node to the current node with the given capacity,
+ * initializing its residual capacity to the same value.
+ *
+ * @param neighbor The neighbor node to be added.
+ * @param capacity The capacity of the edge connecting the current node to the neighbor.
+ */
         public void AddNeighbor(Node neighbor, int capacity)
         {
             Neighbors.Add(neighbor);
@@ -99,6 +166,11 @@ namespace HometrackerLibrary
             ResidualCapacities[neighbor] = capacity; // Initially, residual capacity is equal to the original capacity
         }
     }
+    /**
+ * @brief Represents an edge between two nodes in a graph.
+ *
+ * This class represents an edge between two nodes in a graph, storing the nodes and the weight of the edge.
+ */
     public class Edge
     {
         public Node U { get; set; }
@@ -112,12 +184,38 @@ namespace HometrackerLibrary
          */
     public class Hometracker
     {
+        /**
+ * @brief Indicates whether the system is currently in guest mode.
+ *
+ * This static boolean variable represents the current mode of the system, indicating
+ * whether it is operating in guest mode or not. It is initialized to false by default.
+ */
         public static bool guestMode = false;
 
+        /**
+         * @brief Represents the username of the currently active user.
+         *
+         * This static string variable holds the username of the user who is currently active
+         * within the system. It is initialized to null by default until a user logs in.
+         */
         public static string active_user;
 
+        /**
+         * @brief Represents the residual graph used in certain algorithms.
+         *
+         * This two-dimensional integer array stores the residual graph used in specific algorithms
+         * where it is required. The graph represents the remaining capacities of edges between nodes.
+         */
         public int[,] residualGraph;
+
+        /**
+         * @brief Represents the count of nodes in the residual graph.
+         *
+         * This integer variable holds the count of nodes present in the residual graph. It is used
+         * to determine the dimensions of the residualGraph array.
+         */
         public int nodeCount;
+
         public bool IsTestMode { get; set; } = false;
         /**
         * @brief Reads a line from the console input.
@@ -133,6 +231,12 @@ namespace HometrackerLibrary
         {
             if (!IsTestMode) { Console.Clear(); }
         }
+        /**
+ * @brief Displays the main menu options and handles user input.
+ *
+ * @param authenticationResult Indicates whether the user is authenticated.
+ * @return True if the user chooses to exit the program, otherwise false.
+ */
         public bool MainMenu(bool authenticationResult)
         {
             if (!authenticationResult)
@@ -183,7 +287,13 @@ namespace HometrackerLibrary
                 }
             }
         }
-
+        /**
+ * @brief Saves user information to a binary file.
+ *
+ * @param user User object containing username and password.
+ * @param filename Name of the binary file.
+ * @return 1 if the user information is successfully saved.
+ */
         public int SaveUser(User user, string filename)
         {
             using (FileStream stream = new FileStream(filename, FileMode.Append, FileAccess.Write))
@@ -194,6 +304,14 @@ namespace HometrackerLibrary
             }
             return 1;
         }
+        /**
+ * @brief Authenticates a user against stored credentials.
+ *
+ * @param username Username entered by the user.
+ * @param password Password entered by the user.
+ * @param filename Name of the binary file containing user information.
+ * @return 1 if authentication is successful, 0 otherwise.
+ */
         public int AuthenticateUser(string username, string password, string filename)
         {
             using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
@@ -211,6 +329,11 @@ namespace HometrackerLibrary
             }
             return 0;
         }
+        /**
+ * @brief Handles user authentication and registration.
+ *
+ * @return True if authentication/registration is successful, false otherwise.
+ */
         public bool UserAuthentication()
         {
             ClearScreen();
@@ -289,6 +412,11 @@ namespace HometrackerLibrary
                 }
             }
         }
+        /**
+ * @brief Performs Breadth-First Search traversal on a graph starting from a specified node.
+ *
+ * @param startNode Starting node for the BFS traversal.
+ */
         public void BFS(Node startNode)
         {
             Queue<Node> queue = new Queue<Node>();
@@ -305,6 +433,11 @@ namespace HometrackerLibrary
                 foreach (var neighbor in node.Neighbors) { if (!visited.Contains(neighbor.Username)) { queue.Enqueue(neighbor); visited.Add(neighbor.Username); } }
             }
         }
+        /**
+ * @brief Performs Depth-First Search traversal on a graph starting from a specified node.
+ *
+ * @param startNode Starting node for the DFS traversal.
+ */
         public void DFS(Node startNode)
         {
             Stack<Node> stack = new Stack<Node>();
@@ -324,6 +457,13 @@ namespace HometrackerLibrary
                 }
             }
         }
+        /**
+ * @brief Loads utility usage data into a graph.
+ *
+ * @param usages List of utility usage data.
+ * @param nodes List of nodes in the graph.
+ * @return True if the loading process is successful.
+ */
         public bool LoadGraph(List<UtilityUsage> usages, List<Node> nodes)
         {
             var nodeDict = new Dictionary<string, Node>();
@@ -361,7 +501,11 @@ namespace HometrackerLibrary
             nodes.AddRange(nodeDict.Values);
             return true;
         }
-
+        /**
+ * @brief Displays utility usages using either Breadth-First Search or Depth-First Search.
+ *
+ * @param rootNode Node representing the user.
+ */
         public void ViewUtilityUsages(Node rootNode)
         {
             Console.WriteLine("Select search method:");
@@ -390,7 +534,14 @@ namespace HometrackerLibrary
                     break;
             }
         }
-
+        /**
+ * @brief Finds a path from a source node to a sink node in a graph using BFS.
+ *
+ * @param source Source node.
+ * @param sink Sink node.
+ * @param parentMap Dictionary storing parent-child relationships for path reconstruction.
+ * @return True if a path is found, false otherwise.
+ */
         public bool FindPath(Node source, Node sink, Dictionary<Node, Node> parentMap)
         {
             if (source == null || sink == null) { Console.WriteLine("There is no path."); return false; }
@@ -421,7 +572,13 @@ namespace HometrackerLibrary
 
             return false;
         }
-
+        /**
+ * @brief Finds the maximum flow in a graph using the Ford-Fulkerson algorithm.
+ *
+ * @param source The source node of the flow network.
+ * @param sink The sink node of the flow network.
+ * @return The maximum flow value.
+ */
         public int FordFulkerson(Node source, Node sink)
         {
             int maxFlow = 0;
@@ -454,6 +611,13 @@ namespace HometrackerLibrary
 
             return maxFlow;
         }
+        /**
+ * @brief Saves utility usage information to a binary file.
+ *
+ * @param usage The utility usage data to be saved.
+ * @param filename The name of the binary file.
+ * @return True if the utility usage is successfully saved, otherwise false.
+ */
         public bool SaveUtilityUsage(UtilityUsage usage, string filename)
         {
             List<UtilityUsage> usages = LoadUtilityUsages(filename);
@@ -494,6 +658,12 @@ namespace HometrackerLibrary
                 return false;
             }
         }
+        /**
+ * @brief Loads utility usage information from a binary file.
+ *
+ * @param filename The name of the binary file.
+ * @return A list of utility usage data.
+ */
         public List<UtilityUsage> LoadUtilityUsages(string filename)
         {
             List<UtilityUsage> usages = new List<UtilityUsage>();
@@ -518,6 +688,13 @@ namespace HometrackerLibrary
             }
             return usages;
         }
+        /**
+ * @brief Finds the maximum flow in a graph using the Edmonds-Karp algorithm.
+ *
+ * @param source The source node of the flow network.
+ * @param sink The sink node of the flow network.
+ * @return The maximum flow value.
+ */
         public int EdmondsKarp(Node source, Node sink)
         {
             int maxFlow = 0;
@@ -545,6 +722,12 @@ namespace HometrackerLibrary
 
             return maxFlow;
         }
+        /**
+ * @brief Displays and calculates the maximum flow in a flow network.
+ *
+ * @param source The source node of the flow network.
+ * @param sink The sink node of the flow network.
+ */
         public void CalculateAndShowMaximumFlow(Node source, Node sink)
         {
             Console.WriteLine("1. Ford-Fulkerson");
@@ -574,7 +757,13 @@ namespace HometrackerLibrary
 
             Console.WriteLine($"Maximum flow: {flow}");
         }
-
+        /**
+ * @brief Performs Dijkstra's algorithm to find shortest paths from a source node to all other nodes.
+ *
+ * @param source The source node for the shortest paths.
+ * @param dist Dictionary storing the shortest distances from the source node.
+ * @param prev Dictionary storing the previous node in the shortest path.
+ */
         public void Dijkstra(Node source, Dictionary<Node, int> dist, Dictionary<Node, Node> prev)
         {
             var nodes = new List<Node>();
@@ -600,6 +789,13 @@ namespace HometrackerLibrary
                 }
             }
         }
+        /**
+ * @brief Performs the Bellman-Ford algorithm to find shortest paths from a source node to all other nodes.
+ *
+ * @param source The source node for the shortest paths.
+ * @param dist Dictionary storing the shortest distances from the source node.
+ * @return True if no negative-weight cycles are reachable from the source node, otherwise false.
+ */
         public bool BellmanFord(Node source, Dictionary<Node, int> dist)
         {
             var nodes = new List<Node>(); // This needs to be all the nodes in the graph
@@ -631,6 +827,12 @@ namespace HometrackerLibrary
                 }
             }
             return true; }
+        /**
+ * @brief Initializes costs for each pair of nodes in a graph.
+ *
+ * @param costs Dictionary storing the costs between each pair of nodes.
+ * @param nodes List of nodes in the graph.
+ */
         public void InitializeCosts(Dictionary<Node, Dictionary<Node, int>> costs, List<Node> nodes)
         {
             foreach (var u in nodes)
@@ -642,6 +844,11 @@ namespace HometrackerLibrary
                 }
             }
         }
+        /**
+ * @brief Generates a Minimum Spanning Tree (MST) using Prim's algorithm.
+ *
+ * @param nodes List of nodes in the graph.
+ */
         public void PrimMST(List<Node> nodes)
         {
             var key = new Dictionary<Node, int>();
@@ -673,7 +880,14 @@ namespace HometrackerLibrary
                 foreach (var neighbor in u.Neighbors) { if (!mstSet[neighbor] && u.Capacities[neighbor] < key[neighbor]) { parent[neighbor] = u; key[neighbor] = u.Capacities[neighbor]; } }
             }
         }
-
+        /**
+ * @brief Finds the node with the minimum key value from the set of nodes not yet included in the Minimum Spanning Tree (MST).
+ *
+ * @param key Dictionary storing the key values for each node.
+ * @param mstSet Dictionary indicating whether a node is included in the MST or not.
+ * @return The node with the minimum key value that is not yet included in the MST.
+ *         Returns null if all nodes are included in the MST.
+ */
         private Node GetMinKeyNode(Dictionary<Node, int> key, Dictionary<Node, bool> mstSet)
         {
             int min = int.MaxValue;
@@ -690,13 +904,27 @@ namespace HometrackerLibrary
 
             return minNode; // Can return null if all nodes are included in mstSet
         }
-
+        /**
+ * @brief Finds the representative of the set that contains the specified node.
+ *
+ * @param parent Dictionary storing parent nodes for each node.
+ * @param i The node to find the representative for.
+ * @return The representative node.
+ */
         public Node Find(Dictionary<Node, Node> parent, Node i)
         {
             if (parent[i] == i)
                 return i;
             return parent[i] = Find(parent, parent[i]);
         }
+        /**
+ * @brief Combines two sets into a single set by joining them using their representatives.
+ *
+ * @param parent Dictionary storing parent nodes for each node.
+ * @param rank Dictionary storing the rank of each node in the set.
+ * @param i The representative of the first set.
+ * @param j The representative of the second set.
+ */
         public void Union(Dictionary<Node, Node> parent, Dictionary<Node, int> rank, Node i, Node j)
         {
             Node rootI = Find(parent, i);
@@ -715,6 +943,12 @@ namespace HometrackerLibrary
                 }
             }
         }
+        /**
+ * @brief Generates a Minimum Spanning Tree (MST) using Kruskal's algorithm.
+ *
+ * @param nodes List of nodes in the graph.
+ * @param edges List of edges in the graph.
+ */
         public void KruskalMST(List<Node> nodes, List<Edge> edges)
         {
             var parent = new Dictionary<Node, Node>();
@@ -731,6 +965,12 @@ namespace HometrackerLibrary
             Console.WriteLine("Kruskal's MST:");
             foreach (var edge in edges) { Node u = Find(parent, edge.U); Node v = Find(parent, edge.V); if (u != v) { Console.WriteLine($"{edge.U.Username} - {edge.V.Username}: {edge.Weight}"); Union(parent, rank, u, v); } }
         }
+        /**
+ * @brief Handles utility logging functionality and menu display.
+ *
+ * @param localGuestMode Indicates whether the user is in local guest mode.
+ * @return True if the user chooses to return to the main menu, otherwise false.
+ */
         public bool UtilityLogging(bool localGuestMode)
         {
             if (localGuestMode)
@@ -915,6 +1155,12 @@ namespace HometrackerLibrary
                 }
             }
         }
+        /**
+ * @brief Calculates and displays the total utility expenses for the current user.
+ *
+ * @param localGuestMode Indicates whether the user is in local guest mode.
+ * @return True if the expense calculation is successful, otherwise false.
+ */
         public bool CalculateAndShowExpenses(bool localGuestMode)
         {
             ClearScreen();
@@ -964,7 +1210,9 @@ namespace HometrackerLibrary
 
             return true;
         }
-
+        /**
+ * @brief Displays trend analysis information for countrywide utility usage.
+ */
         public void ShowTrendAnalysis()
         {
             ClearScreen();
@@ -981,7 +1229,13 @@ namespace HometrackerLibrary
             Console.WriteLine("+-------------------------------------+");
             take_enter_input();
         }
-
+        /**
+ * @brief Saves a reminder to a binary file.
+ *
+ * @param reminder The reminder to be saved.
+ * @param filename The name of the binary file.
+ * @return 1 if the reminder is successfully saved, otherwise 0.
+ */
         public int SaveReminder(Reminder reminder, string filename)
         {
 
@@ -997,8 +1251,15 @@ namespace HometrackerLibrary
             }
             return 1;
         }
-
-
+        /**
+ * @brief Loads reminders from a binary file.
+ *
+ * @param username The username for which to load reminders.
+ * @param filename The name of the binary file.
+ * @param reminders List to store loaded reminders.
+ * @param maxReminders The maximum number of reminders to load.
+ * @return The number of reminders loaded.
+ */
         public int LoadReminders(string username, string filename, List<Reminder> reminders, int maxReminders)
         {
             try
@@ -1026,8 +1287,12 @@ namespace HometrackerLibrary
                 return 0;
             }
         }
-
-
+        /**
+ * @brief Displays upcoming reminders.
+ *
+ * @param reminders List of reminders to display.
+ * @return True if there are reminders to display, otherwise false.
+ */
         public bool PrintReminders(List<Reminder> reminders)
         {
             if (reminders.Count == 0)
@@ -1051,7 +1316,12 @@ namespace HometrackerLibrary
             take_enter_input();
             return true;
         }
-
+        /**
+ * @brief Manages reminder setup functionality and menu display.
+ *
+ * @param localGuestMode Indicates whether the user is in local guest mode.
+ * @return True if the user chooses to return to the main menu, otherwise false.
+ */
         public bool ReminderSetup(bool localGuestMode)
         {
             if (localGuestMode)
